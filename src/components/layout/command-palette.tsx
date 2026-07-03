@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import {
+  Command,
   CommandDialog,
   CommandInput,
   CommandList,
@@ -67,8 +68,11 @@ export function CommandPalette() {
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
-      <CommandInput placeholder="Type a command or search…" />
-      <CommandList>
+      {/* cmdk primitives (Input/List/Item) require a <Command> ancestor to
+          register with — omitting it throws "no command menu found" on open. */}
+      <Command>
+        <CommandInput placeholder="Type a command or search…" />
+        <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
 
         <CommandGroup heading="Navigation">
@@ -113,7 +117,8 @@ export function CommandPalette() {
             Sign Out
           </CommandItem>
         </CommandGroup>
-      </CommandList>
+        </CommandList>
+      </Command>
     </CommandDialog>
   );
 }
