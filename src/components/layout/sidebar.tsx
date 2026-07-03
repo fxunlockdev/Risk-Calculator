@@ -32,7 +32,7 @@ interface NavItem {
 
 const NAV_ITEMS: readonly NavItem[] = [
   {
-    label: "Risk Calc",
+    label: "Risk Calculator",
     href: "/risk-calculator",
     icon: Calculator,
     section: "main",
