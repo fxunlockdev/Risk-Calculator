@@ -1,0 +1,50 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # The anon key is a public, RLS-protected client key — safe in a
+      # public workflow file by Supabase's design.
+      NEXT_PUBLIC_SUPABASE_URL: https://lkzgpxkyueazrnbugldj.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxremdweGt5dWVhenJuYnVnbGRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwNjIyODMsImV4cCI6MjA5ODYzODI4M30.PaRsUY4ZqrJoslVeCAs1hs7tGxdc8ydf0f0qw8epMAM
+      NEXT_PUBLIC_BASE_PATH: /Risk-Calculator
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

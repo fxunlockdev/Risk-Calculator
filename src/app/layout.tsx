@@ -1,0 +1,55 @@
+import type { Metadata } from "next";
+import { Hanken_Grotesk, Manrope } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ToasterProvider } from "@/components/toaster-provider";
+import { AuthProvider } from "@/components/providers/auth-provider";
+import "./globals.css";
+
+// Manrope — body, data & UI labels (legible, balanced).
+const manrope = Manrope({
+  variable: "--font-sans",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+// Hanken Grotesk — display & headings (sharp, technical, tightly tracked).
+const hanken = Hanken_Grotesk({
+  variable: "--font-hanken",
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  title: "FX Unlock Risk Calculator",
+  description:
+    "Professional forex risk and position size calculator — size every trade by account risk.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${manrope.variable} ${hanken.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <body className="min-h-full bg-background text-foreground">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            {children}
+            <ToasterProvider />
+          </AuthProvider>
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
